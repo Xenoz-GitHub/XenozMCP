@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "roblox-studio": {
+      "command": "launch_studio_mcp",
+      "args": []
+    }
+  },
+  "openCloud": {
+    "apiKey": "",
+    "defaultUniverseId": ""
+  },
+  "vault": {
+    "enabled": true,
+    "keyPath": ""
+  }
+}
