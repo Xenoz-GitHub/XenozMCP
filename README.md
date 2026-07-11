@@ -41,6 +41,37 @@ XenozMCP Server (Node.js/TypeScript)
   └── Tool Router       → 17+ tools
 ```
 
+## Browser Extension
+
+XenozMCP includes a Chrome/Edge extension that connects **free AI chat sites** directly to Roblox Studio.
+
+### Supported AI Sites
+DeepSeek, ChatGPT, Claude, Gemini, Qwen, Mistral, Copilot, Perplexity
+
+### How It Works
+```
+AI Chat Site (browser tab)
+  │ injected content script watches for commands
+  ▼
+Chrome Extension (background.js)
+  │ WebSocket to ws://127.0.0.1:17613
+  ▼
+XenozMCP Bridge (built-in WebSocket server)
+  │ tool execution
+  ▼
+Roblox Studio MCP
+```
+
+### Setup
+1. Open `chrome://extensions/` → Developer mode → Load unpacked → select `extension/` folder
+2. Run XenozMCP: `start-xenoz.bat` or `node dist/index.js`
+3. Open Roblox Studio with a place loaded, enable Assistant → MCP Servers → Studio as MCP Server
+4. Open any supported AI site, click **▶ Start Studio Agent**
+
+The AI receives a system prompt telling it which commands are available. It writes commands as JSON code blocks, and XenozMCP executes them on your Roblox Studio automatically.
+
+---
+
 ## Quick Start
 
 ### Prerequisites

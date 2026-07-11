@@ -1,0 +1,88 @@
+{
+  "manifest_version": 3,
+  "name": "XenozMCP — Roblox Studio AI Bridge",
+  "version": "1.0.0",
+  "description": "Connect free AI chat sites to Roblox Studio through XenozMCP. Supports DeepSeek, ChatGPT, Claude, Gemini, Qwen, and more.",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://chat.deepseek.com/*",
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://claude.ai/*",
+    "https://gemini.google.com/*",
+    "https://chat.qwen.ai/*",
+    "https://chat.mistral.ai/*",
+    "https://copilot.microsoft.com/*",
+    "https://www.perplexity.ai/*",
+    "https://perplexity.ai/*",
+    "http://127.0.0.1/*",
+    "ws://127.0.0.1/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "XenozMCP",
+    "default_icon": {
+      "16": "icons/icon.png",
+      "48": "icons/icon.png",
+      "128": "icons/icon.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chat.deepseek.com/*"],
+      "js": ["core/config.js", "core/parser.js", "core/virtual-tools.js", "providers/deepseek.js", "core/main.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"],
+      "js": ["core/config.js", "core/parser.js", "core/virtual-tools.js", "providers/chatgpt.js", "core/main.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://claude.ai/*"],
+      "js": ["core/config.js", "core/parser.js", "core/virtual-tools.js", "providers/claude.js", "core/main.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://gemini.google.com/*"],
+      "js": ["core/config.js", "core/parser.js", "core/virtual-tools.js", "providers/gemini.js", "core/main.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://chat.qwen.ai/*"],
+      "js": ["core/config.js", "core/parser.js", "core/virtual-tools.js", "providers/qwen.js", "core/main.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://chat.mistral.ai/*"],
+      "js": ["core/config.js", "core/parser.js", "core/virtual-tools.js", "providers/mistral.js", "core/main.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://copilot.microsoft.com/*"],
+      "js": ["core/config.js", "core/parser.js", "core/virtual-tools.js", "providers/copilot.js", "core/main.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.perplexity.ai/*", "https://perplexity.ai/*"],
+      "js": ["core/config.js", "core/parser.js", "core/virtual-tools.js", "providers/perplexity.js", "core/main.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

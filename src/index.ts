@@ -6,6 +6,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+import { WebSocketServer, WebSocket } from "ws";
 import { loadConfig, getRoot } from "./config.js";
 import { Vault } from "./vault.js";
 import { MCPClient } from "./mcp-client.js";
@@ -54,11 +55,13 @@ async function startStudioClient(): Promise<void> {
   }
 }
 
+type ToolResult = { text: string; images?: { data: string; mimeType: string }[] };
+
 type ToolDefinition = {
   name: string;
   description: string;
   inputSchema: Record<string, unknown>;
-  handler: (args: Record<string, unknown>) => Promise<{ text: string; images?: { data: string; mimeType: string }[] }>;
+  handler: (args: Record<string, unknown>) => Promise<ToolResult>;
 };
 
 const studioTools = createStudioTools(null);
@@ -156,6 +159,27 @@ function refreshStudioTools(): void {
   }
 }
 
+async function executeTool(name: string, args: Record<string, unknown>): Promise<{ content: Record<string, unknown>[]; isError?: boolean }> {
+  const tool = toolMap.get(name);
+  if (!tool) {
+    return { content: [{ type: "text", text: `Unknown tool: ${name}` }], isError: true };
+  }
+  try {
+    const result = await tool.handler(args || {});
+    const content: Record<string, unknown>[] = [{ type: "text", text: result.text }];
+    if (result.images) {
+      for (const img of result.images) {
+        content.push({ type: "image", data: img.data, mimeType: img.mimeType });
+      }
+    }
+    return { content };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return { content: [{ type: "text", text: `ERROR: ${msg}` }], isError: true };
+  }
+}
+
+// ── MCP stdio server ─────────────────────────────────────────────
 const server = new Server(
   { name: "xenoz-mcp", version: "0.1.0" },
   { capabilities: { tools: {} } }
@@ -173,31 +197,70 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
-  const tool = toolMap.get(name);
-
-  if (!tool) {
-    throw new Error(`Unknown tool: ${name}`);
-  }
-
-  try {
-    const result = await tool.handler(args || {});
-    const content: Record<string, unknown>[] = [{ type: "text", text: result.text }];
-
-    if (result.images) {
-      for (const img of result.images) {
-        content.push({ type: "image", data: img.data, mimeType: img.mimeType });
-      }
-    }
-
-    return { content };
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    return {
-      content: [{ type: "text", text: `ERROR: ${msg}` }],
-      isError: true,
-    };
-  }
+  return executeTool(name, args || {});
 });
+
+// ── WebSocket server (for browser extension) ──────────────────────
+const WS_PORT = 17613;
+
+function startWebSocketServer(): void {
+  const wss = new WebSocketServer({ port: WS_PORT });
+  console.error(`[xenoz-mcp] Extension bridge listening on ws://127.0.0.1:${WS_PORT}`);
+
+  wss.on("connection", (ws: WebSocket) => {
+    console.error("[xenoz-mcp] Extension connected");
+
+    ws.on("message", async (raw: Buffer) => {
+      let msg: Record<string, unknown>;
+      try {
+        msg = JSON.parse(raw.toString());
+      } catch {
+        ws.send(JSON.stringify({ ok: false, error: "invalid JSON" }));
+        return;
+      }
+
+      const type = msg.type as string;
+      const id = msg.id as number;
+
+      if (type === "list_tools") {
+        refreshStudioTools();
+        const tools = Array.from(toolMap.entries()).map(([name, t]) => ({
+          name, description: t.description, inputSchema: t.inputSchema,
+        }));
+        ws.send(JSON.stringify({ type: "tools", id, tools }));
+        return;
+      }
+
+      if (type === "call_tool") {
+        const resp = await executeTool(msg.name as string, (msg.arguments || {}) as Record<string, unknown>);
+        const textContent = resp.content.find((c) => c.type === "text");
+        const imageContent = resp.content.filter((c) => c.type === "image");
+        ws.send(JSON.stringify({
+          type: "tool_result", id,
+          ok: !resp.isError,
+          text: textContent ? (textContent.text as string) : "",
+          images: imageContent.length > 0 ? imageContent : undefined,
+        }));
+        return;
+      }
+
+      if (type === "get_status") {
+        const alive = studioClient?.isAlive || false;
+        ws.send(JSON.stringify({
+          type: "status", id,
+          connected: alive,
+          studioOpen: alive,
+          mcpAlive: alive,
+        }));
+        return;
+      }
+    });
+
+    ws.on("close", () => {
+      console.error("[xenoz-mcp] Extension disconnected");
+    });
+  });
+}
 
 async function main(): Promise<void> {
   console.error(`[xenoz-mcp] Starting XenozMCP v0.1.0...`);
@@ -209,10 +272,11 @@ async function main(): Promise<void> {
   }
 
   startStudioClient();
+  startWebSocketServer();
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error(`[xenoz-mcp] Ready — listening on stdio`);
+  console.error(`[xenoz-mcp] Ready — listening on stdio + ws://127.0.0.1:${WS_PORT}`);
 }
 
 main().catch((err) => {

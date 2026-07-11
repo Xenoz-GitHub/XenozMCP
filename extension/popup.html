@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 320px;
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Segoe UI', -apple-system, sans-serif;
+      font-size: 13px;
+      padding: 16px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .logo img { width: 36px; height: 36px; border-radius: 8px; }
+    .logo h1 { font-size: 16px; color: #58a6ff; font-weight: 700; }
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #161b22;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot-green { background: #3fb950; }
+    .dot-yellow { background: #d29922; }
+    .dot-red { background: #f85149; }
+    .label { color: #8b949e; }
+    .value { color: #c9d1d9; font-weight: 500; }
+    .section { margin-top: 12px; }
+    .section-title { color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .tool-list { max-height: 200px; overflow-y: auto; }
+    .tool-item {
+      padding: 4px 8px;
+      background: #161b22;
+      border-radius: 4px;
+      margin-bottom: 3px;
+      font-size: 11px;
+      color: #c9d1d9;
+    }
+    .tool-item span { color: #58a6ff; }
+    .footer {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 11px;
+      color: #484f58;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <img src="icons/icon.png" alt="XenozMCP"/>
+    <h1>XenozMCP</h1>
+  </div>
+
+  <div class="status-row">
+    <div class="dot dot-red" id="studio-dot"></div>
+    <span class="label">Bridge:</span>
+    <span class="value" id="bridge-status">Disconnected</span>
+  </div>
+  <div class="status-row">
+    <div class="dot dot-red" id="mcp-dot"></div>
+    <span class="label">Studio:</span>
+    <span class="value" id="mcp-status">Offline</span>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Available Tools (<span id="tool-count">0</span>)</div>
+    <div class="tool-list" id="tool-list"></div>
+  </div>
+
+  <div class="footer">XenozMCP v1.0.0 — AES-256-GCM Encrypted</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
