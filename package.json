@@ -1,7 +1,7 @@
 {
   "name": "xenoz-mcp",
   "version": "0.1.0",
-  "description": "XenozMCP — Roblox Studio MCP Server with AES-256-GCM encrypted vault",
+  "description": "XenozMCP — AI neural bridge for Roblox Studio. Encrypted MCP server (AES-256-GCM) connecting AI minds to the Roblox metaverse through stdio + WebSocket.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {

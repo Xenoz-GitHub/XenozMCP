@@ -1,104 +1,110 @@
-# XenozMCP
 
 <p align="center">
-  <img src="assets/x.png" alt="XenozMCP Logo" width="200"/>
+  <img src="assets/x.png" alt="XenozMCP Logo" width="180"/>
 </p>
 
 <p align="center">
-  <strong>Roblox Studio MCP Server — encrypted, extensible, AI-ready.</strong>
+  <strong><span style="color:#58a6ff;font-size:24px">⟦ XENOZMCP ⟧</span></strong><br/>
+  <span style="color:#8b949e;font-size:14px">AI neural bridge for the Roblox metaverse</span>
 </p>
 
 <p align="center">
-  <a href="#"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License"/></a>
-  <a href="#"><img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=flat-square&logo=node.js" alt="Node.js"/></a>
-  <a href="#"><img src="https://img.shields.io/badge/built%20by-XenozExe-ff69b4?style=flat-square" alt="XenozExe"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/license-MIT-00ff88?style=flat-square" alt="MIT"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=flat-square&logo=node.js" alt="Node"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/encryption-AES--256--GCM-00aaff?style=flat-square" alt="AES-256-GCM"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/protocol-MCP-ff69b4?style=flat-square" alt="MCP"/></a>
 </p>
 
 ---
 
-XenozMCP is a standalone [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server that connects AI assistants (Claude Desktop, Cursor, Claude Code, etc.) to **Roblox Studio** and the **Roblox Open Cloud API**. It wraps Roblox's native Studio MCP server with an encrypted vault (AES-256-GCM), adds Open Cloud tooling, and provides a clean stdio interface for any MCP-compatible client.
+```
+╔═══════════════════════════════════════════════════════╗
+║  XENOZMCP  —  v0.1.0                                 ║
+║  AI → Roblox Studio neural bridge                    ║
+║  Transport: stdio | WebSocket :17613                  ║
+║  Encryption: AES-256-GCM                             ║
+║  Status: ████████████ 100% operational               ║
+╚═══════════════════════════════════════════════════════╝
+```
+
+XenozMCP is a **Model Context Protocol** server that opens a neural link between AI consciousness and the Roblox metaverse. It translates AI intent into Studio actions — executing Luau, manipulating instances, controlling play-testing, and commanding the Open Cloud — all secured by military-grade AES-256-GCM encryption.
+
+Connect any MCP-compatible client (Claude, Cursor, Copilot) or inject directly into 8 AI chat sites via the browser extension. One protocol. Infinite creation.
 
 ---
 
-## Features
-
-- **Studio Integration** — execute Luau, read/write scripts, capture viewport, inspect instances, control play-testing
-- **Open Cloud API** — manage data stores, publish places, list universes, send notifications
-- **Encrypted Vault** — AES-256-GCM storage for API keys and secrets (your keys, your control)
-- **Auto-discovery** — finds StudioMCP.exe regardless of Roblox Studio version or update path
-- **Zero config** — connect and go; no browser extension needed
-
-## Architecture
+## SYSTEM ARCHITECTURE
 
 ```
-AI Client (Claude Desktop, Cursor, etc.)
-  │ stdio transport
-  ▼
-XenozMCP Server (Node.js/TypeScript)
-  ├── Studio Controller → StudioMCP.exe (stdio MCP)
-  ├── Open Cloud Client → apis.roblox.com (REST)
-  ├── Encrypted Vault   → AES-256-GCM (local)
-  └── Tool Router       → 17+ tools
+┌─────────────────────────────────────────────────────┐
+│                    AI CONSCIOUSNESS                  │
+│         Claude · Cursor · GPT · DeepSeek            │
+└─────────────────────┬───────────────────────────────┘
+                      │ stdio / WebSocket
+                      ▼
+┌─────────────────────────────────────────────────────┐
+│                  XENOZMCP KERNEL                     │
+│                                                     │
+│  ┌────────────┐  ┌────────────┐  ┌───────────────┐  │
+│  │Studio MCP  │  │Open Cloud  │  │AES-256-GCM    │  │
+│  │Controller  │  │Gateway     │  │Encrypted Vault│  │
+│  └─────┬──────┘  └──────┬─────┘  └───────┬───────┘  │
+│        │                │                │          │
+│  ┌─────┴──────┐  ┌──────┴─────┐          │          │
+│  │StudioMCP   │  │apis.roblox │          │          │
+│  │.exe (stdio)│  │.com (REST) │          │          │
+│  └─────┬──────┘  └────────────┘          │          │
+│        │                                  │          │
+└────────┼──────────────────────────────────┼──────────┘
+         │                                  │
+         ▼                                  ▼
+  ┌──────────────┐                 ┌──────────────────┐
+  │ Roblox Studio│                 │  Local Vault     │
+  │  Metaverse   │                 │  (encrypted keys)│
+  └──────────────┘                 └──────────────────┘
 ```
 
-## Browser Extension
+### Dual-Channel Communication
 
-XenozMCP includes a Chrome/Edge extension that connects **free AI chat sites** directly to Roblox Studio.
-
-### Supported AI Sites
-DeepSeek, ChatGPT, Claude, Gemini, Qwen, Mistral, Copilot, Perplexity
-
-### How It Works
-```
-AI Chat Site (browser tab)
-  │ injected content script watches for commands
-  ▼
-Chrome Extension (background.js)
-  │ WebSocket to ws://127.0.0.1:17613
-  ▼
-XenozMCP Bridge (built-in WebSocket server)
-  │ tool execution
-  ▼
-Roblox Studio MCP
-```
-
-### Setup
-1. Open `chrome://extensions/` → Developer mode → Load unpacked → select `extension/` folder
-2. Run XenozMCP: `start-xenoz.bat` or `node dist/index.js`
-3. Open Roblox Studio with a place loaded, enable Assistant → MCP Servers → Studio as MCP Server
-4. Open any supported AI site, click **▶ Start Studio Agent**
-
-The AI receives a system prompt telling it which commands are available. It writes commands as JSON code blocks, and XenozMCP executes them on your Roblox Studio automatically.
+| Channel | Transport | Port | Clients |
+|---------|-----------|------|---------|
+| **MCP Core** | stdio | — | Claude Desktop, Cursor, Claude Code, Copilot |
+| **Extension Bridge** | WebSocket | `17613` | DeepSeek, ChatGPT, Claude, Gemini, Qwen, Mistral, Perplexity |
 
 ---
 
-## Quick Start
+## DEPLOYMENT
 
 ### Prerequisites
+- **Node.js ≥ 18** — the runtime
+- **Roblox Studio** — with MCP enabled (Assistant → MCP Servers → Studio as MCP Server)
 
-- [Node.js](https://nodejs.org/) 18+
-- [Roblox Studio](https://create.roblox.com/) with MCP enabled (Assistant → MCP Servers → Studio as MCP Server)
-
-### Run
+### Quick Launch
 
 ```bash
-# Clone
+# Clone from the source
 git clone https://github.com/Xenoz-GitHub/XenozMCP.git
 cd XenozMCP
 
-# Install & build
+# Initialize the kernel
 npm install
 npm run build
 
-# Start
+# Activate the bridge
 node dist/index.js
 ```
 
-Or double-click `start-xenoz.bat` on Windows.
+Or double-click `start-xenoz.bat` on Windows — it auto-installs, builds, and fires up.
 
-### Configure with Claude Desktop
+### Extension Injection (for AI chat sites)
 
-Add to your `claude_desktop_config.json`:
+```
+chrome://extensions → Developer Mode → Load unpacked → select extension/
+```
+
+Then open any supported AI site and hit **▶ Start Studio Agent**.
+
+### Claude Desktop Configuration
 
 ```json
 {
@@ -111,44 +117,60 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
-## Tools
+---
 
-### System
-| Tool | Description |
-|---|---|
-| `studio_status` | Check Roblox Studio connection status |
-| `vault_set` | Store an encrypted value (AES-256-GCM) |
-| `vault_get` | Retrieve a decrypted value |
-| `vault_has` | Check if a key exists |
-| `vault_list` | List all stored key names |
+## COMMAND MATRIX
 
-### Studio
-| Tool | Description |
-|---|---|
-| `list_studio_commands` | List all Studio MCP commands |
-| `execute_luau` | Run Luau code in Studio |
-| `script_read` | Read a script by path |
-| `screen_capture` | Capture viewport screenshot |
-| `inspect_instance` | Inspect a game instance |
-| `start_stop_play` | Toggle play-testing |
-| `get_studio_state` | Get Studio state info |
-| `search_game_tree` | Search instances by name/class |
-| `open_place` | Open a place in Studio |
+### System Core
+| Command | Function | Security |
+|---------|----------|----------|
+| `studio_status` | Ping the neural link | — |
+| `vault_set` | Encrypt & store a secret | AES-256-GCM |
+| `vault_get` | Decrypt & retrieve | AES-256-GCM |
+| `vault_has` | Probe key existence | — |
+| `vault_list` | Enumerate stored keys | — |
 
-### Open Cloud
-| Tool | Description |
-|---|---|
-| `cloud_list_data_stores` | List data stores |
-| `cloud_get_data_store_entry` | Get a data store value |
-| `cloud_set_data_store_entry` | Set a data store value |
-| `cloud_get_universe_info` | Get universe info |
-| `cloud_publish_place` | Publish a place |
-| `cloud_list_places` | List places in a universe |
-| `cloud_send_notification` | Send notification to players |
+### Studio Manipulation
+| Command | Function |
+|---------|----------|
+| `list_studio_commands` | Scan available Studio MCP commands |
+| `execute_luau` | Inject and run Luau bytecode |
+| `script_read` | Extract script source by path |
+| `screen_capture` | Photograph the viewport (multi-angle) |
+| `inspect_instance` | Read instance properties and children |
+| `start_stop_play` | Toggle play-testing dimension |
+| `get_studio_state` | Query the Studio status matrix |
+| `search_game_tree` | Locate instances by name or class |
+| `open_place` | Open a place by ID |
 
-## Configuration
+### Open Cloud Commands
+| Command | Function |
+|---------|----------|
+| `cloud_list_data_stores` | Scan data store index |
+| `cloud_get_data_store_entry` | Read from the data stream |
+| `cloud_set_data_store_entry` | Write to the data stream |
+| `cloud_get_universe_info` | Access universe metadata |
+| `cloud_publish_place` | Deploy a place to production |
+| `cloud_list_places` | Map all places in a universe |
+| `cloud_send_notification` | Broadcast to all active players |
 
-Edit `config.json`:
+---
+
+## SECURITY PROTOCOL
+
+XenozMCP uses **AES-256-GCM** (Galois/Counter Mode) for all secret storage — the same encryption standard securing banking and military communications. Each secret is encrypted with a unique initialization vector, authenticated with a 128-bit GCM tag, and derived through 600,000 PBKDF2 iterations.
+
+```
+plaintext → AES-256-GCM → iv:tag:ciphertext → vault.store
+```
+
+Set your vault key via `XENOZ_VAULT_KEY` environment variable, or let XenozMCP generate one on first launch.
+
+---
+
+## CONFIGURATION
+
+Edit `config.json` to bind your Open Cloud credentials:
 
 ```json
 {
@@ -159,18 +181,25 @@ Edit `config.json`:
 }
 ```
 
-API keys can also be stored securely via the `vault_set` tool at runtime.
-
-## Environment Variables
-
-| Variable | Description |
-|---|---|
-| `XENOZ_VAULT_KEY` | 64-char hex key for vault encryption |
-
-## License
-
-MIT — see [LICENSE](LICENSE).
+Sensitive values can also be injected at runtime through the `vault_set` command — never stored in plaintext.
 
 ---
 
-Built by **XenozExe**.
+## ENVIRONMENT VARIABLES
+
+| Variable | Purpose |
+|----------|---------|
+| `XENOZ_VAULT_KEY` | 64-char hex key for the AES-256-GCM vault |
+
+---
+
+## LICENSE
+
+**MIT** — fork it, mod it, deploy it.
+
+---
+
+<p align="center">
+  <span style="color:#484f58">built by </span><span style="color:#58a6ff">**XenozExe**</span><br/>
+  <span style="color:#30363d;font-size:12px">⟦ 0x7F >_ 0x3A ⟧</span>
+</p>
